@@ -1,23 +1,49 @@
 <script setup>
 import { ref } from "vue";
-import { defineEmits } from "vue";
 
-const message = ref("");
+let name = ref("User");
+let messageText = ref("");
+
 const emit = defineEmits(["sendMessage"]);
 
 function doit() {
-  if (message.value.trim() !== "") {
-    emit("sendMessage", { user: "Mai", text: message.value });
-    message.value = "";
+  if (messageText.value.trim() !== "") {
+    const newMessage = {
+      user: name.value,
+      text: messageText.value,
+    };
+
+    console.log("Emitting message:", newMessage);
+    emit("sendMessage", newMessage);
+    messageText.value = "";
   }
 }
 </script>
 
 <template>
   <div class="form">
-    <input v-model="message" type="text" placeholder="Type your message..." />
-    <button @click.prevent="doit">Send</button>
+    <div class="comment-section">
+      <label for="name">{{ name }}:</label>
+      <input
+        v-model="messageText"
+        type="text"
+        placeholder="Type your message here..."
+      />
+      <button @click="doit">Send</button>
+    </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.form {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  display: flex;
+}
+input {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+}
+</style>

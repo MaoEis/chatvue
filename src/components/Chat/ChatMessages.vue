@@ -1,28 +1,49 @@
 <script setup>
-import { onMounted, reactive, defineProps } from "vue";
+import { defineProps } from "vue";
 
-const messages = reactive([]);
 const props = defineProps({
-  messages: Array,
-});
-
-onMounted(() => {
-  fetch("https://les3mongodb-y1hu.onrender.com/api/v1/messages")
-    .then((response) => response.json())
-    .then((data) => {
-      messages.push(...data.data.messages);
-    });
+  messages: {
+    type: Array,
+    required: true,
+  },
 });
 </script>
 
 <template>
-  <h1>Chat message</h1>
-  <ul>
-    <li v-for="message in [...messages, ...props.messages]" :key="message.id">
-      <strong>{{ message.user }}</strong
-      >: {{ message.text }}
-    </li>
-  </ul>
+  <div class="comments">
+    <ul>
+      <li
+        v-for="(message, index) in props.messages.slice().reverse()"
+        :key="index"
+      >
+        <strong
+          ><p>{{ message.user }}</p></strong
+        >
+        <p>{{ message.text }}</p>
+      </li>
+    </ul>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.comments {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  height: 300px;
+  overflow-y: scroll;
+}
+.comments ul {
+  list-style-type: none;
+  padding: 0;
+}
+.comments li {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+</style>
