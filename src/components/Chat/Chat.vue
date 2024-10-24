@@ -1,49 +1,72 @@
 <script setup>
-import { ref } from "vue";
+import { reactive, onMounted } from "vue";
+import ChatMessages from "./ChatMessages.vue";
+import ChatForm from "./ChatForm.vue";
 
-let name = ref("User");
-let messageText = ref("");
+const state = reactive({
+  messages: [],
+});
 
-const emit = defineEmits(["sendMessage"]);
-
-function doit() {
-  if (messageText.value.trim() !== "") {
-    const newMessage = {
-      user: name.value,
-      text: messageText.value,
-    };
-
-    console.log("Emitting message:", newMessage);
-    emit("sendMessage", newMessage);
-    messageText.value = "";
+async function fetchMessages() {
+  try {
+    const response = await fetch(
+      "https://les3mongodb-y1hu.onrender.com/api/v1/messages"
+    );
+    const data = await response.json();
+    state.messages = data.data.messages;
+  } catch (error) {
+    console.error("Error fetching messages:", error);
   }
 }
+
+function addMessage(newMessage) {
+  console.log("Received message:", newMessage);
+
+  if (!newMessage || !newMessage.user || !newMessage.text) {
+    console.error("Invalid message data:", newMessage);
+    return;
+  }
+
+  const messageToSend = {
+    message: {
+      user: newMessage.user,
+      text: newMessage.text,
+    },
+  };
+
+  console.log("Sending message:", messageToSend);
+
+  state.messages.push(newMessage);
+
+  fetch("https://les3mongodb-y1hu.onrender.com/api/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(messageToSend),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Message saved:", data);
+    })
+    .catch((err) => {
+      console.error("Error sending message:", err);
+    });
+}
+
+onMounted(() => {
+  fetchMessages();
+});
 </script>
 
 <template>
-  <div class="form">
-    <div class="comment-section">
-      <label for="name">{{ name }}:</label>
-      <input
-        v-model="messageText"
-        type="text"
-        placeholder="Type your message here..."
-      />
-      <button @click="doit">Send</button>
-    </div>
-  </div>
+  <ChatMessages :messages="state.messages" />
+  <ChatForm @sendMessage="addMessage" />
 </template>
 
-<style scoped>
-.form {
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  display: flex;
-}
-input {
-  flex: 1;
-  padding: 10px;
-  font-size: 1rem;
-}
-</style>
+<style scoped></style>

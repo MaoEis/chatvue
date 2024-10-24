@@ -43,7 +43,11 @@ function doit() {
 }
 input {
   flex: 1;
-  padding: 10px;
+  margin: 10px;
+  width: 200px;
   font-size: 1rem;
+  border: solid 1px grey;
+  border-radius: 5px;
+  padding: 3px;
 }
 </style>

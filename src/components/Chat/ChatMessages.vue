@@ -19,6 +19,7 @@ const props = defineProps({
         <strong
           ><p>{{ message.user }}</p></strong
         >
+
         <p>{{ message.text }}</p>
       </li>
     </ul>
@@ -27,23 +28,28 @@ const props = defineProps({
 
 <style scoped>
 .comments {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  height: 300px;
+  margin-right: 50px;
+  padding: 5px;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  height: 250px;
+  width: 40vw;
   overflow-y: scroll;
 }
 .comments ul {
   list-style-type: none;
-  padding: 0;
+  padding: 5px;
 }
 .comments li {
-  margin-bottom: 10px;
-  padding: 10px;
+  margin-bottom: 5px;
+  padding-left: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+}
+
+.comments li p {
+  margin: 10px 5px;
 }
 </style>
